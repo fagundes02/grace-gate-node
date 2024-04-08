@@ -1,0 +1,9 @@
+church-create:
+  handler: src/church/functions/church-create.handler
+  description: Lambda de criação de igreja no sistema
+  events:
+    - http:
+        path: /church
+        method: post
+        cors: true
+        private: true

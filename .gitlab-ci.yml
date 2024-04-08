@@ -1,0 +1,30 @@
+image: node:20.9.0
+
+cache:
+  untracked: true
+  key: '$CI_BUILD_REF_NAME'
+  paths:
+    - node_modules/
+
+stages:
+  - build
+  - lint
+  - test
+
+build:
+  script:
+    - yarn install
+    - export VERSION=$(cat package.json | jq -r .version)
+  stage: build
+
+lint:
+  script:
+    - yarn lint
+  stage: lint
+
+test:
+  script:
+    - wget -O libssl1.1.deb http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.23_amd64.deb
+    - dpkg -i libssl1.1.deb
+    - yarn test
+  stage: test

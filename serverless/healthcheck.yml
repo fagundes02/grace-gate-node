@@ -1,0 +1,17 @@
+healthcheck:
+  handler: src/healthcheck/functions/healthcheck.handler
+  description: Lambda function to test the health status of the server
+  events:
+    - http:
+        path: /healthcheck
+        method: get
+        cors: true
+
+healthcheck-create:
+  handler: src/healthcheck/functions/healthcheck-create.handler
+  description: Lambda function as an example of a more complex case
+  events:
+    - http:
+        path: /healthcheck
+        method: post
+        cors: true

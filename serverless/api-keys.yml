@@ -1,0 +1,2 @@
+apiKeys:
+  - value: ${env:ADMIN_API_KEY, ssm:/${self:provider.stage}/${self:service}/admin_api_key}

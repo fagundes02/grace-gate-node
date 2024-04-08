@@ -1,0 +1,8 @@
+api-docs:
+  handler: src/docs/functions/api-docs.handler
+  description: Lambda function to return documentation
+  events:
+    - http:
+        path: /api-docs/{proxy+}
+        method: get
+        cors: true

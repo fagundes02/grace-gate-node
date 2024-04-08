@@ -1,0 +1,47 @@
+service: ${file(./package.json):name}
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "sa-east-1"}
+  environment: ${self:custom.environment}
+  timeout: 30
+  memorySize: 512
+  apiGateway:
+    apiKeys: ${file(./serverless/api-keys.yml):apiKeys}
+
+package:
+  excludeDevDependencies: true
+  patterns:
+    - '!.vscode/**'
+
+functions:
+  - ${file(./serverless/api-docs.yml)}
+  - ${file(./serverless/church.yml)}
+  - ${file(./serverless/healthcheck.yml)}
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-tscpaths
+
+custom:
+  environment:
+    NODE_ENV: ${env:NODE_ENV, ssm:/${self:provider.stage}/${self:service}/node_env}
+    MONGO_DB_URL: ${env:MONGO_DB_URL, ssm:/${self:provider.stage}/${self:service}/mongo_db_url}
+    BASE_URL: ${env:BASE_URL, ssm:/${self:provider.stage}/${self:service}/base_url}
+  serverless-offline:
+    httpPort: 3000
+    lambdaPort: 3001
+  prune:
+    automatic: true
+    number: 2
+  tscpaths:
+    '@app': '@app'
+    '@test': '@test'
+    '@root': '@root'
